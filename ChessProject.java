@@ -214,6 +214,50 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
       validMove = true;
     }
 
+    else if (pieceName.contains("Knight")) {
+      int landingX = e.getX()/75;
+      int landingY = e.getY()/75;
+      if (((landingX<0) || (landingX>7) || (landingY<0)||(landingY > 7))) {
+        validMove = false;
+      }
+      else {
+        if (((landingX == startX+1) && (landingY == startY+2))
+        || ((landingX == startX-1) && (landingY == startY+2))
+        || ((landingX == startX+2) && (landingY == startY+1))
+        || ((landingX == startX-2) && (landingY == startY+1))
+        || ((landingX == startX+1) && (landingY == startY-2))
+        || ((landingX == startX-1) && (landingY == startY-2))
+        || ((landingX == startX+2) && (landingY == startY-1))
+        || ((landingX == startX-2) && (landingY == startY-1))  ) {
+
+          if (piecePresent(e.getX(),(e.getY()))) {
+            if (pieceName.contains("White")) {
+              if (!checkBlackOponent(e.getX(),e.getY())) {
+                validMove = true;
+              }
+              else {
+                validMove = false;
+              }
+            }
+            else{
+              if (checkBlackOponent(e.getX(), e.getY())) {
+                validMove = true;
+              }
+              else {
+                validMove = false;
+              }
+            }
+          }
+          else {
+            validMove = true;
+            }
+          }
+          else {
+          validMove = false;
+        }
+      }
+    }
+
     if (pieceName.equals("BlackPawn")) {
       //The pawn can move either two or one sqaures
       if (startY == 6) {
