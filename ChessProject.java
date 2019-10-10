@@ -198,7 +198,6 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 		String tmp = chessPiece.getIcon().toString();
 		String pieceName = tmp.substring(0, (tmp.length()-4));
 		Boolean validMove = false;
-    Boolean inTheWay = false;
 
 		/*
 			The only piece that has been enabled to move is a White Pawn...but we should really have this is a separate
@@ -217,40 +216,41 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
     }
 
 //code for Bishup Movement
-    else if (pieceName.equals("Bishup")) {
+    else if (pieceName.contains("Bishup")) {
+
+      Boolean inTheWay = false;
       int landingX = e.getX()/75;
       int landingY = e.getY()/75;
-      int distance =  Math.abs(startX-landingX);
-
-      if (((landingX<0) || (landingX>7)) || ((landingY < 0)||(landingY>7))) {
+      int distance = Math.abs(startX-landingX);
+      if (((landingX < 0) || (landingX > 7)) || ((landingY < 0) || (landingY > 7))) { //if outisde of board
         validMove = false;
       }
       else {
         validMove = true;
-        if (Math.abs(startX-landingX) == Math.abs(startY-landingY)) {
-          if ((startX-landingX < 0) && (startY-landingY < 0)) {
-            for (int i=0;i < distance ;i++ ) {
+        if (Math.abs(startX-landingX) == Math.abs(startY-landingY)) { //if vhange in X is same as chnage in Y
+          if ((startX-landingX < 0)&&(startY - landingY < 0)) { //if change in X is negative, and change in y negative
+            for (int i = 0;i < distance ;i++ ) {
               if (piecePresent((initialX+(i*75)), (initialY+(i*75)))) {
                 inTheWay = true;
               }
             }
           }
-          else if ((startX-landingX < 0) && (startY - landingY > 0)) {
-            for (int i=0;i<distance ;i++ ) {
+          else if ((startX-landingX < 0)&&(startY-landingY > 0)) { //delta X negative, deta Y positive,
+            for (int i=0;i < distance ;i++) {
               if (piecePresent((initialX+(i*75)), (initialY-(i*75)))) {
                 inTheWay = true;
               }
             }
           }
-          else if ((startX-landingX > 0) && (startY - landingY > 0)) {
-            for (int i=0;i<distance ;i++ ) {
+          else if ((startX-landingX > 0)&&(startY-landingY > 0)) { //delta X positive, delta Y positive
+            for (int i = 0;i < distance ;i++ ) {
               if (piecePresent((initialX-(i*75)), (initialY-(i*75)))) {
                 inTheWay = true;
               }
             }
           }
-          else if ((startX-landingX > 0) && (startY - landingY < 0)) {
-            for (int i=0;i<distance ;i++ ) {
+          else if ((startX-landingX>0)&&(startY-landingY<0)) { //delta X positive, delta Y negative
+            for (int i = 0;i < distance ;i++) {
               if (piecePresent((initialX-(i*75)), (initialY+(i*75)))) {
                 inTheWay = true;
               }
@@ -272,19 +272,19 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
               }
               else {
                 if (checkBlackOponent(e.getX(), e.getY())) {
-                  validMove = true;
+                  validMove=true;
                 }
                 else {
-                  validMove = false;
+                  validMove = true;
                 }
               }
             }
-            else {
+            else{
               validMove = true;
             }
           }
         }
-        else{
+        else {
           validMove = false;
         }
       }
@@ -293,7 +293,7 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 
 //Code for Rook Movement
     else if(pieceName.contains("Rook")) {
-      inTheWay = false;
+      Boolean inTheWay = false;
       int landingX = e.getX()/75;
       int landingY = e.getY()/75;
       if ((landingX < 0) || (landingX >7) || (landingY < 0) || (landingY > 7)) {
@@ -435,132 +435,144 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
 
     if (pieceName.equals("BlackPawn")) {
       //The pawn can move either two or one sqaures
-      if (startY == 6) {
-        //int landingY = e.getY()/75; //getting new Y position
-        //int landingX = e.getX()/75;
-        if ((startX == (e.getX()/75)) && (((startY-(e.getY()/75))== 1) || (startY-(e.getY()/75))==2)) {
-          if(((startY-(e.getY()/75))==2)){ //if change in y is equal to 2
-						if((!piecePresent(e.getX(), (e.getY())))&&(!piecePresent(e.getX(), (e.getY()+75)))){ //checks if there is ay peice on first square in front or second square
-							validMove = true;
-						}
-						else{
-							validMove = false;
-						}
-					}
-					else{
-						if((!piecePresent(e.getX(), (e.getY())))) //else if no piece is present
-						{
-							validMove = true;
-						}
-						else{
-							validMove = false;
-						}
-					}
-        }
-        else if ( (piecePresent(e.getX(), e.getY())) && ((((e.getX()/75)-startX)==1)||((e.getX()/75)-startX)==-1) && (((e.getY()/75)-startY)==-1)) {
-          validMove = true;
-        }
-        else {
-          validMove = false;
-        }
+      if ((turnCount%2) == 0) {
+        validMove = false;
       }
       else {
-        int landingY = e.getY()/75; //getting new Y position
-        int landingX = e.getX()/75;
-        if ((startX == landingX) && (((startY-landingY) == 1))) {
-          if(!piecePresent(e.getX(),(e.getY()))) {
-            validMove =true;
+        if (startY == 6) {
+          //int landingY = e.getY()/75; //getting new Y position
+          //int landingX = e.getX()/75;
+          if ((startX == (e.getX()/75)) && (((startY-(e.getY()/75))== 1) || (startY-(e.getY()/75))==2)) {
+            if(((startY-(e.getY()/75))==2)){ //if change in y is equal to 2
+              if((!piecePresent(e.getX(), (e.getY())))&&(!piecePresent(e.getX(), (e.getY()+75)))){ //checks if there is ay peice on first square in front or second square
+                validMove = true;
+              }
+              else{
+                validMove = false;
+              }
+            }
+            else{
+              if((!piecePresent(e.getX(), (e.getY())))) //else if no piece is present
+              {
+                validMove = true;
+              }
+              else{
+                validMove = false;
+              }
+            }
+          }
+          else if ( (piecePresent(e.getX(), e.getY())) && ((((e.getX()/75)-startX)==1)||((e.getX()/75)-startX)==-1) && (((e.getY()/75)-startY)==-1)) {
+            validMove = true;
+          }
+          else {
+            validMove = false;
+          }
+        }
+        else {
+          int landingY = e.getY()/75; //getting new Y position
+          int landingX = e.getX()/75;
+          if ((startX == landingX) && (((startY-landingY) == 1))) {
+            if(!piecePresent(e.getX(),(e.getY()))) {
+              validMove =true;
+              if (landingY==0) {
+                progress = true;
+              }
+            }
+            else{
+              validMove = false;
+            }
+
+          }
+          else if ((checkBlackOponent(e.getX(),e.getY())) && (piecePresent(e.getX(), e.getY())) && ((((e.getX()/75)-startX)==1)||((e.getX()/75)-startX)==-1) && (((e.getY()/75)-startY)==-1)) {
+            validMove =  true; //fix for white pawn taking a black piece when at starting position
             if (landingY==0) {
               progress = true;
+            }
+          }
+           else {
+            validMove = false;
+          }
+        }
+      }
+
+    }
+
+		if(pieceName.equals("WhitePawn")){
+
+      if ((turnCount%2) == 1) {
+        validMove = false;
+      }
+      else {
+        if(startY == 1) //if move is at start
+        {
+          if((startX == (e.getX()/75))&&((((e.getY()/75)-startY)==1)||((e.getY()/75)-startY)==2)) //if move is one square ahead or two
+          {
+            if((((e.getY()/75)-startY)==2)){ //if change in y is equal to 2
+              if((!piecePresent(e.getX(), (e.getY())))&&(!piecePresent(e.getX(), (e.getY()-75)))){ //checks if there is ay peice on first square in front or second square
+                validMove = true;
+              }
+              else{
+                validMove = false;
+              }
+            }
+            else{
+              if((!piecePresent(e.getX(), (e.getY())))) //else if no piece is present
+              {
+                validMove = true;
+              }
+              else{
+                validMove = false;
+              }
+            }
+          }
+          else if ((!checkBlackOponent(e.getX(), e.getY())) && (piecePresent(e.getX(), e.getY())) && (((((e.getX()/75) == (startX+1)&&(startX+1<=7)))||(((e.getX()/75) == (startX-1))&&(startX-1 >=0))))&&((e.getY()/75) == (startY+1))) {
+            validMove =  true; //fix for white pawn taking a black piece when at starting position
+          }
+          else{
+            validMove = false;
+          }
+        }
+        else{ //if pawn is moving any other position than start
+          int newY = e.getY()/75; //getting new Y position
+          int newX = e.getX()/75;	//getting new X position
+          if((startX-1 >=0)||(startX +1 <=7)) //if startX is between starting position between start row and end of table
+          {
+            if((piecePresent(e.getX(), (e.getY())))&&((((newX == (startX+1)&&(startX+1<=7)))||((newX == (startX-1))&&(startX-1 >=0))))&&(newY == (startY+1))) //if new X,Y is has piece and x is +/- 1 , and y is +1
+            {
+              if(checkWhiteOponent(e.getX(), e.getY())){ //Check is peice is white opponent
+                validMove = true;
+                if(startY == 6){ //if start Y is equal to 6, then this is a valid move
+                  success = true;
+                }
+              }
+              else{
+                validMove = false;
+              }
+            }
+            else{
+              if(!piecePresent(e.getX(), (e.getY()))){ //if newX and newY has no piece
+                if((startX == (e.getX()/75))&&((e.getY()/75)-startY)==1){ //if startX is same as newX, and if newY - startY is equal to its a valid move
+                  if(startY == 6){
+                    success = true; //if startY is 6 then its valid
+                  }
+                  validMove = true;
+                }
+                else{
+                  validMove = false;
+                }
+              }
+              else{
+                validMove = false;
+              }
             }
           }
           else{
             validMove = false;
           }
-
         }
-        else if ((checkBlackOponent(e.getX(),e.getY())) && (piecePresent(e.getX(), e.getY())) && ((((e.getX()/75)-startX)==1)||((e.getX()/75)-startX)==-1) && (((e.getY()/75)-startY)==-1)) {
-          validMove =  true; //fix for white pawn taking a black piece when at starting position
-          if (landingY==0) {
-            progress = true;
-          }
-        }
-         else {
-          validMove = false;
-        }
-
-
       }
-    }
 
-		if(pieceName.equals("WhitePawn")){
-			if(startY == 1) //if move is at start
-			{
-				if((startX == (e.getX()/75))&&((((e.getY()/75)-startY)==1)||((e.getY()/75)-startY)==2)) //if move is one square ahead or two
-				{
-					if((((e.getY()/75)-startY)==2)){ //if change in y is equal to 2
-						if((!piecePresent(e.getX(), (e.getY())))&&(!piecePresent(e.getX(), (e.getY()-75)))){ //checks if there is ay peice on first square in front or second square
-							validMove = true;
-						}
-						else{
-							validMove = false;
-						}
-					}
-					else{
-						if((!piecePresent(e.getX(), (e.getY())))) //else if no piece is present
-						{
-							validMove = true;
-						}
-						else{
-							validMove = false;
-						}
-					}
-				}
-        else if ((!checkBlackOponent(e.getX(), e.getY())) && (piecePresent(e.getX(), e.getY())) && (((((e.getX()/75) == (startX+1)&&(startX+1<=7)))||(((e.getX()/75) == (startX-1))&&(startX-1 >=0))))&&((e.getY()/75) == (startY+1))) {
-          validMove =  true; //fix for white pawn taking a black piece when at starting position
-        }
-				else{
-					validMove = false;
-				}
-			}
-			else{ //if pawn is moving any other position than start
-				int newY = e.getY()/75; //getting new Y position
-				int newX = e.getX()/75;	//getting new X position
-				if((startX-1 >=0)||(startX +1 <=7)) //if startX is between starting position between start row and end of table
-				{
-					if((piecePresent(e.getX(), (e.getY())))&&((((newX == (startX+1)&&(startX+1<=7)))||((newX == (startX-1))&&(startX-1 >=0))))&&(newY == (startY+1))) //if new X,Y is has piece and x is +/- 1 , and y is +1
-					{
-						if(checkWhiteOponent(e.getX(), e.getY())){ //Check is peice is white opponent
-							validMove = true;
-							if(startY == 6){ //if start Y is equal to 6, then this is a valid move
-								success = true;
-							}
-						}
-						else{
-							validMove = false;
-						}
-					}
-					else{
-						if(!piecePresent(e.getX(), (e.getY()))){ //if newX and newY has no piece
-							if((startX == (e.getX()/75))&&((e.getY()/75)-startY)==1){ //if startX is same as newX, and if newY - startY is equal to its a valid move
-								if(startY == 6){
-									success = true; //if startY is 6 then its valid
-								}
-								validMove = true;
-							}
-							else{
-								validMove = false;
-							}
-						}
-						else{
-							validMove = false;
-						}
-					}
-				}
-				else{
-					validMove = false;
-				}
-			}
+
 		}
 
 
@@ -637,7 +649,6 @@ public class ChessProject extends JFrame implements MouseListener, MouseMotionLi
     System.out.println("Difference in Y is:"+(startY-(e.getY()/75)));
     System.out.println("Starting Y Co ordinate is: "+startY);
     System.out.println("turnCount: "+turnCount);
-    System.out.println("In the Way:"+inTheWay);
     System.out.println("-------------------------");
 
     }
